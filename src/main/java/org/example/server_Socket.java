@@ -13,9 +13,9 @@ public class server_Socket {
             ServerSocket ss = new ServerSocket(8080);
             ExecutorService executor = Executors.newFixedThreadPool(3);
             while (true) {
-                System.out.println("En attente d'un nouvelle connexion");
+                System.out.println("waiting new connection");
                 Socket ts = ss.accept();
-                System.out.println("Nouvelle connexion");
+                System.out.println(" new connection");
                 HTTP_Server_Runable w = new HTTP_Server_Runable(ts);
                 executor.execute(w);
             }

@@ -8,6 +8,8 @@ import java.net.Socket;
 public class HTTP_Server_Runable implements  Runnable {
     private int id = 0 ;
     private Socket ts ;
+    private boolean ispost = false ;
+    private  int content = 0 ;
 
     public HTTP_Server_Runable(Socket tts) {
         ts= tts ;
@@ -25,47 +27,42 @@ public class HTTP_Server_Runable implements  Runnable {
             while ( ( s = buffRead.readLine() ) != null ) {
 
                 System.out.println(s);
-
                 if(s.startsWith("GET")){
                     ///end id parsing
                     if(id ==0){
                         output_client_print.firstPage();
-                        output_client_print.send();
+
                     }
 
 
                 }
                 else  if(s.startsWith("POST")){
-                        output_client_print.personnenotherepage();
+                      //  output_client_print.personnenotherepage();
+
+                        while ( ( s = buffRead.readLine() ) != null ) {
+                                System.out.println(s);
+                                if(s.startsWith("Content-Length:")) {
+                                content = Integer.parseInt(s.split("Content-Length: ")[1]);
+                                break;
+                            }
+                                output_client_print.firstPage();
+                        }
                     }
-
-
-
-
 
             }
 
-
-
+            if(content > 0){
+                String mystring = buffRead.readLine();
+                System.out.println(mystring);
+            }
 
             buffRead.close();
             output_client_print.close();
-
             ts.close();
 
-
-
-        }catch (Exception e){
-
-            try{
-                OutputStream client_output = ts.getOutputStream() ;
-                OutPutPrinter output_client_print = new OutPutPrinter(client_output);
-                output_client_print.erreurgeneralsend();
-                ts.close();
-            }
-            catch(Exception exp){
+            }catch (Exception exp){
                 exp.printStackTrace();
             }
         }
-    }
+
 }
